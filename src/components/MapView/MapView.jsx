@@ -8,7 +8,7 @@ function MapView({ points, onAddMarker, selectedCountry }) {
   return (
     <div className="map-view">
       <MapContainer
-        center={[0, 0]}
+        center={[49.3606, -30.554]}
         zoom={2}
         style={{ height: "100%", width: "100%" }}
       >
