@@ -86,11 +86,7 @@ function MapPage() {
 
       <div className="main-content">
         {location.pathname === "/list" ? (
-          <PointsList
-            points={markers}
-            itemsPerPage={itemsPerPage}
-            setItemsPerPage={setItemsPerPage}
-          />
+          <PointsList points={markers} />
         ) : (
           <MapView
             points={markers}

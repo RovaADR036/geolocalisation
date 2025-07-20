@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import "./PointsList.css";
 
-function PointsList({ points, itemsPerPage, setItemsPerPage }) {
+function PointsList({ points }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const itemsPerPage = 3; // Nombre fixe de 3 points par page
 
   const filteredPoints = points.filter((point) =>
     point.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -15,36 +16,27 @@ function PointsList({ points, itemsPerPage, setItemsPerPage }) {
     currentPage * itemsPerPage
   );
 
-  useEffect(() => setCurrentPage(1), [searchTerm, itemsPerPage]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   return (
     <div className="points-list-container">
       <div className="list-header">
         <h2>Liste des points ({filteredPoints.length})</h2>
-        <div className="list-controls">
-          <input
-            type="text"
-            placeholder="Rechercher..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <select
-            value={itemsPerPage}
-            onChange={(e) => setItemsPerPage(Number(e.target.value))}
-          >
-            {[3, 6, 9, 12].map((num) => (
-              <option key={num} value={num}>
-                {num}/page
-              </option>
-            ))}
-          </select>
-        </div>
+        <input
+          type="text"
+          placeholder="Rechercher un point..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
       </div>
 
       <div className="points-grid">
         {currentItems.length > 0 ? (
-          currentItems.map((point, index) => (
-            <div key={index} className="point-card">
+          currentItems.map((point, idx) => (
+            <div key={idx} className="point-card">
               {point.flag && (
                 <img src={point.flag} alt="Drapeau" className="point-flag" />
               )}
@@ -71,23 +63,23 @@ function PointsList({ points, itemsPerPage, setItemsPerPage }) {
             </div>
           ))
         ) : (
-          <div className="no-results">Aucun résultat trouvé</div>
+          <div className="no-results">Aucun point trouvé</div>
         )}
       </div>
 
       {totalPages > 1 && (
         <div className="pagination">
           <button
-            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
           >
             Précédent
           </button>
           <span>
-            Page {currentPage} sur {totalPages}
+            Page {currentPage}/{totalPages}
           </span>
           <button
-            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
           >
             Suivant

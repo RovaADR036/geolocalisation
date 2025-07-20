@@ -1,7 +1,8 @@
 .points-list-container {
-  padding: 20px;
   height: 100%;
   overflow-y: auto;
+  padding: 20px;
+  box-sizing: border-box; /* important pour éviter débordement */
 }
 
 .list-header {
@@ -88,4 +89,19 @@
   padding: 40px;
   color: #666;
   font-style: italic;
+}
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.search-input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 250px;
 }
