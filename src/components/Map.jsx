@@ -36,47 +36,86 @@ const FlyToCountry = ({ position }) => {
   return null;
 };
 
-function PointsList({ points, itemsPerPage }) {
+function PointsList({ points, itemsPerPage, setItemsPerPage }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(points.length / itemsPerPage);
-  const currentItems = points.slice(
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredPoints = points.filter((point) =>
+    point.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredPoints.length / itemsPerPage);
+  const currentItems = filteredPoints.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, itemsPerPage]);
+
   return (
     <div className="points-list-container">
-      <h2>Liste des points ({points.length})</h2>
+      <div className="list-header">
+        <h2>Liste des points ({filteredPoints.length})</h2>
+        <div className="list-controls">
+          <div className="list-search">
+            <input
+              type="text"
+              placeholder="Rechercher un point..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+          <div className="items-per-page">
+            <select
+              value={itemsPerPage}
+              onChange={(e) => setItemsPerPage(Number(e.target.value))}
+            >
+              <option value={3}>3/page</option>
+              <option value={6}>6/page</option>
+              <option value={9}>9/page</option>
+              <option value={12}>12/page</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
       <div className="points-grid">
-        {currentItems.map((point, idx) => (
-          <div key={idx} className="point-card">
-            {point.flag && (
-              <img src={point.flag} alt="Drapeau" className="point-flag" />
-            )}
-            <h3>{point.name}</h3>
-            <p>
-              <strong>Coordonnées :</strong> {point.lat.toFixed(4)},{" "}
-              {point.lng.toFixed(4)}
-            </p>
-            {point.region && (
+        {currentItems.length > 0 ? (
+          currentItems.map((point, idx) => (
+            <div key={idx} className="point-card">
+              {point.flag && (
+                <img src={point.flag} alt="Drapeau" className="point-flag" />
+              )}
+              <h3>{point.name}</h3>
               <p>
-                <strong>Région :</strong> {point.region}
+                <strong>Coordonnées :</strong> {point.lat.toFixed(4)},{" "}
+                {point.lng.toFixed(4)}
               </p>
-            )}
-            {point.capital && (
-              <p>
-                <strong>Capitale :</strong> {point.capital}
-              </p>
-            )}
-            {point.population && (
-              <p>
-                <strong>Population :</strong>{" "}
-                {point.population.toLocaleString()}
-              </p>
-            )}
+              {point.region && (
+                <p>
+                  <strong>Région :</strong> {point.region}
+                </p>
+              )}
+              {point.capital && (
+                <p>
+                  <strong>Capitale :</strong> {point.capital}
+                </p>
+              )}
+              {point.population && (
+                <p>
+                  <strong>Population :</strong>{" "}
+                  {point.population.toLocaleString()}
+                </p>
+              )}
+            </div>
+          ))
+        ) : (
+          <div className="no-results">
+            Aucun point ne correspond à votre recherche
           </div>
-        ))}
+        )}
       </div>
 
       {totalPages > 1 && (
@@ -102,13 +141,7 @@ function PointsList({ points, itemsPerPage }) {
   );
 }
 
-function MapView({
-  points,
-  onAddMarker,
-  selectedCountry,
-  countries,
-  onCountrySelect,
-}) {
+function MapView({ points, onAddMarker, selectedCountry }) {
   return (
     <div className="map-view">
       <MapContainer
@@ -173,8 +206,8 @@ function Map() {
   const [markers, setMarkers] = useState([]);
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
-  const [activeView, setActiveView] = useState("map"); // 'map' or 'list'
-  const [itemsPerPage, setItemsPerPage] = useState(6); // Nombre d'éléments par page
+  const [activeView, setActiveView] = useState("map");
+  const [itemsPerPage, setItemsPerPage] = useState(6);
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -242,24 +275,6 @@ function Map() {
     <div className="app-container">
       <nav className="app-navbar">
         <div className="nav-left">
-          <label htmlFor="countrySelect">Sélectionner un pays : </label>
-          <select
-            id="countrySelect"
-            onChange={handleCountrySelect}
-            defaultValue=""
-          >
-            <option value="" disabled>
-              -- Choisir un pays --
-            </option>
-            {countries.map((country) => (
-              <option key={country.name.common} value={country.name.common}>
-                {country.name.common}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="nav-center">
           <button
             className={`nav-btn ${activeView === "map" ? "active" : ""}`}
             onClick={() => setActiveView("map")}
@@ -276,15 +291,20 @@ function Map() {
         </div>
 
         <div className="nav-right">
+          <label htmlFor="countrySelect">Sélectionner un pays : </label>
           <select
-            value={itemsPerPage}
-            onChange={(e) => setItemsPerPage(Number(e.target.value))}
-            className="page-selector"
+            id="countrySelect"
+            onChange={handleCountrySelect}
+            defaultValue=""
           >
-            <option value={3}>3 par page</option>
-            <option value={6}>6 par page</option>
-            <option value={9}>9 par page</option>
-            <option value={12}>12 par page</option>
+            <option value="" disabled>
+              -- Choisir un pays --
+            </option>
+            {countries.map((country) => (
+              <option key={country.name.common} value={country.name.common}>
+                {country.name.common}
+              </option>
+            ))}
           </select>
         </div>
       </nav>
@@ -295,11 +315,13 @@ function Map() {
             points={markers}
             onAddMarker={handleAddMarker}
             selectedCountry={selectedCountry}
-            countries={countries}
-            onCountrySelect={handleCountrySelect}
           />
         ) : (
-          <PointsList points={markers} itemsPerPage={itemsPerPage} />
+          <PointsList
+            points={markers}
+            itemsPerPage={itemsPerPage}
+            setItemsPerPage={setItemsPerPage}
+          />
         )}
       </div>
     </div>

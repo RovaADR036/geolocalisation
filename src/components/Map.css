@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  font-family: Arial, sans-serif;
 }
 
 /* Barre de navigation */
@@ -15,7 +16,7 @@
   color: white;
 }
 
-.nav-left, .nav-center, .nav-right {
+.nav-left, .nav-right {
   display: flex;
   align-items: center;
   gap: 15px;
@@ -29,6 +30,7 @@
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
+  font-size: 14px;
 }
 
 .nav-btn:hover {
@@ -48,6 +50,7 @@
 .main-content {
   flex: 1;
   height: calc(100vh - 60px);
+  overflow: hidden;
 }
 
 /* Vue carte */
@@ -63,11 +66,40 @@
   overflow-y: auto;
 }
 
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.list-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.list-search input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 250px;
+}
+
+.items-per-page select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
 .points-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
-  margin-top: 20px;
 }
 
 .point-card {
@@ -75,6 +107,11 @@
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.point-card:hover {
+  transform: translateY(-2px);
 }
 
 .point-flag {
@@ -132,14 +169,49 @@
   cursor: not-allowed;
 }
 
-/* Sélecteur */
+/* Message aucun résultat */
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Sélecteur de pays */
 select {
-  padding: 5px 10px;
+  padding: 8px 12px;
   border-radius: 4px;
   border: 1px solid #ddd;
   background-color: white;
+  font-size: 14px;
 }
 
-.page-selector {
-  padding: 5px;
+/* Responsive */
+@media (max-width: 768px) {
+  .app-navbar {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  .nav-left, .nav-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .list-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .list-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .list-search input {
+    min-width: auto;
+    width: 100%;
+  }
 }
