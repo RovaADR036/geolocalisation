@@ -35,34 +35,56 @@ const FlyToCountry = ({ position }) => {
 
 function Sidebar({ countryDetails }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3; // Nombre d'éléments par page
+  const [searchTerm, setSearchTerm] = useState("");
+  const itemsPerPage = 3;
 
-  // Calcul du nombre total de pages
-  const totalPages = Math.ceil(countryDetails.length / itemsPerPage);
+  // Filtrer les pays selon la recherche
+  const filteredCountries = countryDetails.filter((country) =>
+    country.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  // Obtenir les éléments pour la page actuelle
-  const currentItems = countryDetails.slice(
+  const totalPages = Math.ceil(filteredCountries.length / itemsPerPage);
+
+  const currentItems = filteredCountries.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  // Réinitialiser la page à 1 quand on recherche
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   return (
     <div className="sidebar">
       <h2>Détails des pays</h2>
 
+      {/* Barre de recherche */}
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Rechercher un pays deja marquer..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
       <div className="country-list">
-        {currentItems.map((country, idx) => (
-          <div key={idx} className="country-block">
-            <h3>{country.name}</h3>
-            <p>
-              <strong>Latitude:</strong> {country.lat}
-            </p>
-            <p>
-              <strong>Longitude:</strong> {country.lng}
-            </p>
-            <hr />
-          </div>
-        ))}
+        {currentItems.length > 0 ? (
+          currentItems.map((country, idx) => (
+            <div key={idx} className="country-block">
+              <h3>{country.name}</h3>
+              <p>
+                <strong>Latitude:</strong> {country.lat.toFixed(4)}
+              </p>
+              <p>
+                <strong>Longitude:</strong> {country.lng.toFixed(4)}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p className="no-results">Aucun résultat trouvé</p>
+        )}
       </div>
 
       {totalPages > 1 && (
@@ -95,6 +117,11 @@ function Map() {
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [countryDetails, setCountryDetails] = useState([]);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
+
+  const toggleSidebar = () => {
+    setSidebarVisible(!sidebarVisible);
+  };
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -154,6 +181,9 @@ function Map() {
             </option>
           ))}
         </select>
+        <button onClick={toggleSidebar} className="toggle-sidebar-btn">
+          {sidebarVisible ? "◄ Masquer" : "Afficher ►"}
+        </button>
       </div>
 
       <div className="map-with-sidebar">
@@ -185,7 +215,7 @@ function Map() {
           ))}
         </MapContainer>
 
-        <Sidebar countryDetails={countryDetails} />
+        {sidebarVisible && <Sidebar countryDetails={countryDetails} />}
       </div>
     </div>
   );
