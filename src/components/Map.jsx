@@ -80,6 +80,7 @@ function Sidebar({ countryDetails }) {
               <p>
                 <strong>Longitude:</strong> {country.lng.toFixed(4)}
               </p>
+              <hr />
             </div>
           ))
         ) : (
