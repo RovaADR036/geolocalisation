@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MapView from "../MapView/MapView";
 import PointsList from "../PointsList/PointsList";
 import Navbar from "../Navbar/Navbar";
@@ -8,8 +9,8 @@ function MapPage() {
   const [markers, setMarkers] = useState([]);
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
-  const [activeView, setActiveView] = useState("map");
   const [itemsPerPage, setItemsPerPage] = useState(6);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -70,31 +71,30 @@ function MapPage() {
       };
       handleAddMarker(marker);
       setSelectedCountry(marker);
+      navigate("/map"); // Redirige vers la vue carte après sélection
     }
   };
 
   return (
     <div className="app-container">
       <Navbar
-        activeView={activeView}
-        setActiveView={setActiveView}
         countries={countries}
         onCountrySelect={handleCountrySelect}
         hasMarkers={markers.length > 0}
       />
 
       <div className="main-content">
-        {activeView === "map" ? (
-          <MapView
-            points={markers}
-            onAddMarker={handleAddMarker}
-            selectedCountry={selectedCountry}
-          />
-        ) : (
+        {window.location.pathname === "/list" ? (
           <PointsList
             points={markers}
             itemsPerPage={itemsPerPage}
             setItemsPerPage={setItemsPerPage}
+          />
+        ) : (
+          <MapView
+            points={markers}
+            onAddMarker={handleAddMarker}
+            selectedCountry={selectedCountry}
           />
         )}
       </div>

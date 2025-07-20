@@ -1,28 +1,32 @@
+import { Link } from "react-router-dom";
 import CountrySelector from "../CountrySelector/CountrySelector";
 import "./Navbar.css";
-function Navbar({
-  activeView,
-  setActiveView,
-  countries,
-  onCountrySelect,
-  hasMarkers,
-}) {
+
+function Navbar({ countries, onCountrySelect, hasMarkers }) {
   return (
     <nav className="app-navbar">
       <div className="nav-left">
-        <button
-          className={`nav-btn ${activeView === "map" ? "active" : ""}`}
-          onClick={() => setActiveView("map")}
+        <Link
+          to="/map"
+          className={`nav-btn ${
+            window.location.pathname === "/map" ? "active" : ""
+          }`}
         >
           Vue Carte
-        </button>
-        <button
-          className={`nav-btn ${activeView === "list" ? "active" : ""}`}
-          onClick={() => setActiveView("list")}
-          disabled={!hasMarkers}
+        </Link>
+        <Link
+          to="/list"
+          className={`nav-btn ${
+            window.location.pathname === "/list" ? "active" : ""
+          } ${!hasMarkers ? "disabled" : ""}`}
+          onClick={(e) => {
+            if (!hasMarkers) {
+              e.preventDefault();
+            }
+          }}
         >
           Vue Liste
-        </button>
+        </Link>
       </div>
       <div className="nav-right">
         <label htmlFor="countrySelect">Sélectionner un pays : </label>
