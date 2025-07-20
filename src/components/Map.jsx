@@ -58,7 +58,7 @@ function Sidebar({ countryDetails }) {
 
   return (
     <div className="sidebar">
-      <h2>Pays marqués</h2>
+      <h2>Pays marqués ({countryDetails.length})</h2>
 
       <div className="search-container">
         <input
@@ -132,7 +132,7 @@ function Map() {
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [countryDetails, setCountryDetails] = useState([]);
-  const [sidebarVisible, setSidebarVisible] = useState(true);
+  const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const toggleSidebar = () => {
     setSidebarVisible(!sidebarVisible);
@@ -179,6 +179,11 @@ function Map() {
 
     setMarkers((prev) => [...prev, markerData]);
     setCountryDetails((prev) => [...prev, markerData]);
+
+    // Afficher la sidebar automatiquement quand un point est ajouté
+    if (!sidebarVisible) {
+      setSidebarVisible(true);
+    }
   };
 
   const handleCountrySelect = (e) => {
@@ -219,7 +224,11 @@ function Map() {
             </option>
           ))}
         </select>
-        <button onClick={toggleSidebar} className="toggle-sidebar-btn">
+        <button
+          onClick={toggleSidebar}
+          className="toggle-sidebar-btn"
+          disabled={countryDetails.length === 0}
+        >
           {sidebarVisible ? "◄ Masquer" : "Afficher ►"}
         </button>
       </div>
@@ -228,7 +237,7 @@ function Map() {
         <MapContainer
           center={[0, 0]}
           zoom={2}
-          style={{ height: "80vh", width: "100%" }}
+          style={{ height: "90vh", width: "100%" }}
         >
           <TileLayer
             attribution="&copy; OpenStreetMap"
@@ -280,7 +289,9 @@ function Map() {
           ))}
         </MapContainer>
 
-        {sidebarVisible && <Sidebar countryDetails={countryDetails} />}
+        {sidebarVisible && countryDetails.length > 0 && (
+          <Sidebar countryDetails={countryDetails} />
+        )}
       </div>
     </div>
   );
