@@ -1,0 +1,88 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.search-bar {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.search-bar input {
+  padding: 8px;
+  flex-grow: 1;
+}
+
+.toggle-view {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.toggle-view button {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.toggle-view button.active {
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+.map-container {
+  margin: 20px 0;
+  display: flex;
+  gap: 20px;
+}
+
+.selected-country {
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #ddd;
+}
+
+.list-container {
+  display: flex;
+  gap: 20px;
+}
+
+.country-list {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.country-item {
+  border: 1px solid #ddd;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.country-item.selected {
+  border-color: #007bff;
+  background-color: #f0f8ff;
+}
+
+.selected-country-details {
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #ddd;
+}
+
+.country-card {
+  text-align: center;
+}
+
+.country-details {
+  text-align: left;
+  margin-top: 10px;
+}

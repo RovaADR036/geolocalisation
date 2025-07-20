@@ -1,0 +1,63 @@
+/* Dans votre fichier Map.css */
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.topbar {
+  padding: 10px;
+  background-color: #f0f0f0;
+}
+
+.map-with-sidebar {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 50px); /* Ajustez selon la hauteur de votre topbar */
+}
+
+/* Styles existants pour la sidebar avec quelques ajustements */
+.sidebar {
+  width: 300px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  overflow-y: auto; /* Permet le défilement si le contenu est trop long */
+  display: flex;
+  flex-direction: column;
+}
+
+/* La carte occupera le reste de l'espace */
+.map-with-sidebar .leaflet-container {
+  flex: 1;
+  height: 100%;
+}
+
+/* Styles pour la pagination (gardez ceux que je vous ai donnés précédemment) */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  margin-top: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.pagination button {
+  padding: 5px 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 0.9em;
+  color: #666;
+}
