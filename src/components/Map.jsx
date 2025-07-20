@@ -8,14 +8,17 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import "./Map.css"; // On ajoute les styles externes
-import { Draggable } from "leaflet";
+import "./Map.css";
 
 const AddMarkerOnClick = ({ onAddMarker }) => {
   useMapEvents({
     click(e) {
       const { lat, lng } = e.latlng;
-      onAddMarker({ lat, lng, name: "Point manuel" });
+      onAddMarker({
+        lat,
+        lng,
+        name: "Impossible d'avoir le nom via l'API",
+      });
     },
   });
   return null;
@@ -38,7 +41,6 @@ function Sidebar({ countryDetails }) {
   const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 3;
 
-  // Filtrer les pays selon la recherche
   const filteredCountries = countryDetails.filter((country) =>
     country.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -50,20 +52,18 @@ function Sidebar({ countryDetails }) {
     currentPage * itemsPerPage
   );
 
-  // Réinitialiser la page à 1 quand on recherche
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
 
   return (
     <div className="sidebar">
-      <h2>Détails des pays</h2>
+      <h2>Pays marqués</h2>
 
-      {/* Barre de recherche */}
       <div className="search-container">
         <input
           type="text"
-          placeholder="Rechercher un pays deja marquer..."
+          placeholder="Rechercher un pays marqué..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -73,14 +73,30 @@ function Sidebar({ countryDetails }) {
         {currentItems.length > 0 ? (
           currentItems.map((country, idx) => (
             <div key={idx} className="country-block">
+              {country.flag && (
+                <img
+                  src={country.flag}
+                  alt={`Drapeau ${country.name}`}
+                  className="country-flag"
+                />
+              )}
               <h3>{country.name}</h3>
-              <p>
-                <strong>Latitude:</strong> {country.lat.toFixed(4)}
-              </p>
-              <p>
-                <strong>Longitude:</strong> {country.lng.toFixed(4)}
-              </p>
-              <hr />
+              {country.region && (
+                <p>
+                  <strong>Région:</strong> {country.region}
+                </p>
+              )}
+              {country.capital && (
+                <p>
+                  <strong>Capitale:</strong> {country.capital}
+                </p>
+              )}
+              {country.population && (
+                <p>
+                  <strong>Population:</strong>{" "}
+                  {country.population.toLocaleString()}
+                </p>
+              )}
             </div>
           ))
         ) : (
@@ -96,11 +112,9 @@ function Sidebar({ countryDetails }) {
           >
             Précédent
           </button>
-
           <span>
             Page {currentPage} sur {totalPages}
           </span>
-
           <button
             onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
             disabled={currentPage === totalPages}
@@ -128,7 +142,7 @@ function Map() {
     const fetchCountries = async () => {
       try {
         const response = await fetch(
-          "https://restcountries.com/v3.1/all?fields=name,latlng"
+          "https://restcountries.com/v3.1/all?fields=name,latlng,population,region,capital,flags"
         );
         const data = await response.json();
         const sorted = data.sort((a, b) =>
@@ -144,8 +158,27 @@ function Map() {
   }, []);
 
   const handleAddMarker = (position) => {
-    setMarkers((prev) => [...prev, position]);
-    setCountryDetails((prev) => [...prev, position]);
+    const country = countries.find(
+      (c) =>
+        c.latlng &&
+        Math.abs(c.latlng[0] - position.lat) < 0.0001 &&
+        Math.abs(c.latlng[1] - position.lng) < 0.0001
+    );
+
+    const markerData = country
+      ? {
+          lat: position.lat,
+          lng: position.lng,
+          name: country.name.common,
+          flag: country.flags.png,
+          region: country.region,
+          capital: country.capital?.[0],
+          population: country.population,
+        }
+      : position;
+
+    setMarkers((prev) => [...prev, markerData]);
+    setCountryDetails((prev) => [...prev, markerData]);
   };
 
   const handleCountrySelect = (e) => {
@@ -158,6 +191,10 @@ function Map() {
         lat,
         lng,
         name: country.name.common,
+        flag: country.flags.png,
+        region: country.region,
+        capital: country.capital?.[0],
+        population: country.population,
       };
       handleAddMarker(marker);
       setSelectedCountry(marker);
@@ -191,7 +228,7 @@ function Map() {
         <MapContainer
           center={[0, 0]}
           zoom={2}
-          style={{ height: "90vh", width: "100%" }}
+          style={{ height: "80vh", width: "100%" }}
         >
           <TileLayer
             attribution="&copy; OpenStreetMap"
@@ -205,12 +242,39 @@ function Map() {
             <Marker
               key={idx}
               position={[position.lat, position.lng]}
-              Draggable={true}
+              draggable={true}
             >
               <Popup>
-                {position.name}
-                <br />
-                Lat: {position.lat.toFixed(4)}, Lng: {position.lng.toFixed(4)}
+                <div className="popup-content">
+                  {position.flag && (
+                    <img
+                      src={position.flag}
+                      alt={`Drapeau ${position.name}`}
+                      className="popup-flag"
+                    />
+                  )}
+                  <h3>{position.name}</h3>
+                  {position.region && (
+                    <p>
+                      <strong>Région:</strong> {position.region}
+                    </p>
+                  )}
+                  {position.capital && (
+                    <p>
+                      <strong>Capitale:</strong> {position.capital}
+                    </p>
+                  )}
+                  {position.population && (
+                    <p>
+                      <strong>Population:</strong>{" "}
+                      {position.population.toLocaleString()}
+                    </p>
+                  )}
+                  <div className="popup-coords">
+                    <span>Lat: {position.lat.toFixed(4)}</span>
+                    <span>Lng: {position.lng.toFixed(4)}</span>
+                  </div>
+                </div>
               </Popup>
             </Marker>
           ))}

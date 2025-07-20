@@ -1,39 +1,127 @@
-/* Dans votre fichier Map.css */
-
+/* Structure principale */
 .app-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
+/* Barre supérieure */
 .topbar {
   padding: 10px;
   background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
+.topbar select {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.toggle-sidebar-btn {
+  padding: 5px 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.toggle-sidebar-btn:hover {
+  background-color: #45a049;
+}
+
+/* Conteneur carte + sidebar */
 .map-with-sidebar {
   display: flex;
   flex: 1;
-  height: calc(100vh - 50px); /* Ajustez selon la hauteur de votre topbar */
+  height: calc(100vh - 50px);
 }
 
-/* Styles existants pour la sidebar avec quelques ajustements */
-.sidebar {
-  width: 300px;
-  padding: 20px;
-  background-color: #f5f5f5;
-  overflow-y: auto; /* Permet le défilement si le contenu est trop long */
-  display: flex;
-  flex-direction: column;
-}
-
-/* La carte occupera le reste de l'espace */
 .map-with-sidebar .leaflet-container {
   flex: 1;
   height: 100%;
 }
 
-/* Styles pour la pagination (gardez ceux que je vous ai donnés précédemment) */
+/* Sidebar */
+.sidebar {
+  width: 300px;
+  padding: 15px;
+  background-color: #f5f5f5;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+/* Recherche */
+.search-container {
+  margin-bottom: 15px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.search-container input:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* Liste des pays */
+.country-list {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.country-block {
+  padding: 15px;
+  margin-bottom: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.country-flag {
+  width: 50px;
+  height: auto;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+}
+
+/* Popup des marqueurs */
+.popup-content {
+  min-width: 150px;
+  text-align: center;
+}
+
+.popup-flag {
+  width: 80px;
+  margin: 0 auto 10px;
+  display: block;
+}
+
+.popup-coords {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+  font-size: 12px;
+  color: #666;
+}
+
+.popup-coords span {
+  display: block;
+}
+
+/* Pagination */
 .pagination {
   display: flex;
   justify-content: space-between;
@@ -62,26 +150,7 @@
   color: #666;
 }
 
-/* Styles pour la barre de recherche */
-.search-container {
-  margin-bottom: 15px;
-}
-
-.search-container input {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-}
-
-.search-container input:focus {
-  outline: none;
-  border-color: #4CAF50;
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-}
-
-/* Style pour le message "Aucun résultat" */
+/* Messages */
 .no-results {
   text-align: center;
   color: #666;
