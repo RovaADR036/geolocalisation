@@ -8,7 +8,7 @@ function MapView({ points, onAddMarker, selectedCountry }) {
   return (
     <div className="map-view">
       <MapContainer
-        center={[49.3606, -30.554]}
+        center={[20, 0]}
         zoom={2}
         style={{ height: "100%", width: "100%" }}
       >
@@ -20,41 +20,36 @@ function MapView({ points, onAddMarker, selectedCountry }) {
         <AddMarkerOnClick onAddMarker={onAddMarker} />
         {selectedCountry && <FlyToCountry position={selectedCountry} />}
 
-        {points.map((position, idx) => (
-          <Marker
-            key={idx}
-            position={[position.lat, position.lng]}
-            draggable={true}
-          >
+        {points.map((point, index) => (
+          <Marker key={index} position={[point.lat, point.lng]}>
             <Popup>
               <div className="popup-content">
-                {position.flag && (
+                {point.flag && (
                   <img
-                    src={position.flag}
-                    alt={`Drapeau ${position.name}`}
+                    src={point.flag}
+                    alt={`Drapeau ${point.name}`}
                     className="popup-flag"
                   />
                 )}
-                <h3>{position.name}</h3>
-                {position.region && (
+                <h3>{point.name}</h3>
+                {point.region && (
                   <p>
-                    <strong>Région:</strong> {position.region}
+                    <strong>Région:</strong> {point.region}
                   </p>
                 )}
-                {position.capital && (
+                {point.capital && (
                   <p>
-                    <strong>Capitale:</strong> {position.capital}
+                    <strong>Capitale:</strong> {point.capital}
                   </p>
                 )}
-                {position.population && (
+                {point.population && (
                   <p>
-                    <strong>Population:</strong>{" "}
-                    {position.population.toLocaleString()}
+                    <strong>Population:</strong> {point.population}
                   </p>
                 )}
                 <div className="popup-coords">
-                  <span>Lat: {position.lat.toFixed(4)}</span>
-                  <span>Lng: {position.lng.toFixed(4)}</span>
+                  <span>Lat: {point.lat.toFixed(4)}</span>
+                  <span>Lng: {point.lng.toFixed(4)}</span>
                 </div>
               </div>
             </Popup>

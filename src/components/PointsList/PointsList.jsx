@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import "./PointsList.css";
 
 function PointsList({ points, itemsPerPage, setItemsPerPage }) {
@@ -15,71 +15,63 @@ function PointsList({ points, itemsPerPage, setItemsPerPage }) {
     currentPage * itemsPerPage
   );
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, itemsPerPage]);
+  useEffect(() => setCurrentPage(1), [searchTerm, itemsPerPage]);
 
   return (
     <div className="points-list-container">
       <div className="list-header">
         <h2>Liste des points ({filteredPoints.length})</h2>
         <div className="list-controls">
-          <div className="list-search">
-            <input
-              type="text"
-              placeholder="Rechercher un point..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <div className="items-per-page">
-            <select
-              value={itemsPerPage}
-              onChange={(e) => setItemsPerPage(Number(e.target.value))}
-            >
-              <option value={3}>3/page</option>
-              <option value={6}>6/page</option>
-              <option value={9}>9/page</option>
-              <option value={12}>12/page</option>
-            </select>
-          </div>
+          <input
+            type="text"
+            placeholder="Rechercher..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <select
+            value={itemsPerPage}
+            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+          >
+            {[3, 6, 9, 12].map((num) => (
+              <option key={num} value={num}>
+                {num}/page
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
       <div className="points-grid">
         {currentItems.length > 0 ? (
-          currentItems.map((point, idx) => (
-            <div key={idx} className="point-card">
+          currentItems.map((point, index) => (
+            <div key={index} className="point-card">
               {point.flag && (
                 <img src={point.flag} alt="Drapeau" className="point-flag" />
               )}
               <h3>{point.name}</h3>
               <p>
-                <strong>Coordonnées :</strong> {point.lat.toFixed(4)},{" "}
+                <strong>Coordonnées:</strong> {point.lat.toFixed(4)},{" "}
                 {point.lng.toFixed(4)}
               </p>
               {point.region && (
                 <p>
-                  <strong>Région :</strong> {point.region}
+                  <strong>Région:</strong> {point.region}
                 </p>
               )}
               {point.capital && (
                 <p>
-                  <strong>Capitale :</strong> {point.capital}
+                  <strong>Capitale:</strong> {point.capital}
                 </p>
               )}
               {point.population && (
                 <p>
-                  <strong>Population :</strong>{" "}
-                  {point.population.toLocaleString()}
+                  <strong>Population:</strong> {point.population}
                 </p>
               )}
             </div>
           ))
         ) : (
-          <div className="no-results">
-            Aucun point ne correspond à votre recherche
-          </div>
+          <div className="no-results">Aucun résultat trouvé</div>
         )}
       </div>
 

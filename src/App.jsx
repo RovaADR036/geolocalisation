@@ -6,8 +6,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<MapPage />} />
-        <Route path="/map" element={<MapPage view="map" />} />
-        <Route path="/list" element={<MapPage view="list" />} />
+        <Route path="/map" element={<MapPage />} />
+        <Route path="/list" element={<MapPage />} />
       </Routes>
     </Router>
   );

@@ -1,4 +1,5 @@
 import "./CountrySelector.css";
+
 function CountrySelector({ countries, onSelect }) {
   return (
     <select onChange={onSelect} defaultValue="">
